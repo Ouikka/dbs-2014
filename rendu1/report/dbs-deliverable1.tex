@@ -190,31 +190,21 @@
 %\newpage
 
 %----------------------------------------------------------------------------------------
-%	PROBLEM 1
+%	REPORT
 %----------------------------------------------------------------------------------------
 
 % To have just one problem per page, simply put a \clearpage after each problem
 
-\begin{homeworkProblem}
-\lstinputlisting[language=SQL]{script_example.sql}{Sample SQL Script With Highlighting}
-\lipsum[1]
-\end{homeworkProblem}
-
-%----------------------------------------------------------------------------------------
-%	PROBLEM 2
-%----------------------------------------------------------------------------------------
-
-\begin{homeworkProblem}
-\lipsum[2]
-
+\section*{ER modeling}
 \problemAnswer{
 \begin{center}
 \includegraphics[width=0.75\columnwidth]{area} % Example image
 \end{center}
-
-\lipsum[3-5]
 }
-\end{homeworkProblem}
+\\
+\lstinputlisting[language=SQL]{../scripts/area.sql}{SQL script for Area table creation}
+\\
+\lstinputlisting[language=SQL]{../scripts/artist.sql}{SQL script for Artist table creation}
 
 %----------------------------------------------------------------------------------------
 
