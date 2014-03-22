@@ -195,10 +195,26 @@
 
 % To have just one problem per page, simply put a \clearpage after each problem
 
-\section*{ER modeling}
+\section*{ER moodle}
 \problemAnswer{
 \begin{center}
 \includegraphics[width=1\columnwidth]{er} % Example image
+Three main concepts: Song, Artist and Album. Both Song and Album were divided between their descriptive data and their physical incarnation. We decided to set Song as the only necessary information, emulating the approach taken by most popular music player softwares, this justifies most of our data constraints.
+\begin{itemize}
+  \item A Song is related to:
+    \begin{description}
+      \item[Artist: ] A song can exist without known artists, but can also have several artists to describe collaborations.
+      \item[Medium: ] Though a song is not necessarily part of an album, it has to be recorded on some medium. There is therefore a participation constraint of Song in Medium. Their relation is characterized by the song's position on the medium.
+    \end{description}
+
+  \item An Artist is defined by a:
+    \begin{description}
+      \item[Genre: ] A genre can regroup multiple artists, but makes no sense as an empty  container, thus triggering a participation constraint, whereas an artist can be difficult to define as catering to a specific genre, or crossing boundaries between genres nullifying the need for a constraint.
+      \item[Area: ] An artist's location can be pinpointed to a specific creation grounds, hence the arrow. But several artists can be compelled to share their musical feelings in the same studio, and a place which doesn't house such a creative conundrum isn't worth keeping track of.
+    \end{description} 
+
+  \item 
+\end{itemize}
 \end{center}
 }
 \\
