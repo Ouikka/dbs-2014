@@ -210,18 +210,17 @@ Three main concepts: Song, Artist and Album. Both Song and Album were divided be
   \item An Artist is defined by a:
     \begin{description}
       \item[Genre: ] A genre can regroup multiple artists, but makes no sense as an empty  container, thus triggering a participation constraint, whereas an artist can be difficult to define as catering to a specific genre, or crossing boundaries between genres nullifying the need for a constraint.
-      \item[Area: ] An artist's location can be pinpointed to a specific creation grounds, hence the arrow. But several artists can be compelled to share their musical feelings in the same studio, and a place which doesn't house such a creative conundrum isn't worth keeping track of.
+      \item[Area: ] An artist's location can be pinpointed to a specific creation grounds, hence the key constraint. But several artists can be compelled to share their musical feelings in the same studio, and a place which doesn't house such a creative conundrum isn't worth keeping track of.
     \end{description} 
 
-  \item 
+  \item An Album is the logical aggregation of songs, labeled by a title, and can be recorded on multiple ---at least one, participation constraint--- media. Conversely, a medium identifies a singular recording of an album, enforced by a key constraint.
 \end{itemize}
 \end{center}
 }
 \\
-\lstinputlisting[language=SQL]{../scripts/entities.sql}{SQL script for entities table creation}
+\lstinputlisting[language=SQL]{../scripts/area.sql}{SQL script for Area table creation}
 \\
-\lstinputlisting[language=SQL]{../scripts/relations.sql}{SQL script for relations table creation}
+\lstinputlisting[language=SQL]{../scripts/artist.sql}{SQL script for Artist table creation}
 
 %----------------------------------------------------------------------------------------
-
 \end{document}
