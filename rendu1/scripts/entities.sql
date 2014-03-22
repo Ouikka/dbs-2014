@@ -8,7 +8,7 @@ CREATE TABLE Genres (
   genreID CHAR(20), 
   name CHAR(40), 
   type CHAR(20), 
-  count INTEGER, 
+  count INTEGER UNSIGNED, 
   PRIMARY KEY (genreID) )
   
 CREATE TABLE Artists ( 
@@ -22,7 +22,7 @@ CREATE TABLE Artists (
 CREATE TABLE Songs ( 
   songID CHAR(20), 
   name CHAR(40), 
-  length INTEGER,  
+  length INTEGER UNSIGNED,  
   PRIMARY KEY (songID) )
   
 CREATE TABLE Albums ( 

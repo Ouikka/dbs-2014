@@ -15,7 +15,7 @@ CREATE TABLE Song_artist (
 CREATE TABLE Tracks ( 
   songID CHAR(40), 
   mediumID CHAR(20), 
-  position INTEGER, 
+  position INTEGER UNSIGNED, 
   PRIMARY KEY (songID, mediumID),
   FOREIGN KEY (songID) REFERENCES Songs ,
   FOREIGN KEY (mediumID) REFERENCES Mediums )
