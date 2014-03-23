@@ -16,12 +16,14 @@ CREATE TABLE Artists (
   areaID CHAR(20), 
   PRIMARY KEY (artistID),
   FOREIGN KEY (areaID) REFERENCES Areas ) ;
+
   
 CREATE TABLE Songs ( 
   songID CHAR(20), 
-  name CHAR(40) NOT NULL, 
+  name CHAR(40) , 
   length INTEGER,  
   PRIMARY KEY (songID) ) ;
+
   
 CREATE TABLE Albums ( 
   albumID CHAR(20), 
@@ -34,3 +36,4 @@ CREATE TABLE Mediums (
   format CHAR(20), 
   PRIMARY KEY (mediumID),
   FOREIGN KEY (albumID) REFERENCES Albums ) ;
+

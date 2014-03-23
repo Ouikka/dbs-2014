@@ -195,33 +195,50 @@
 
 % To have just one problem per page, simply put a \clearpage after each problem
 
-\section*{ER moodle}
+\section*{ER model for music database}
 \problemAnswer{
 \begin{center}
 \includegraphics[width=1\columnwidth]{er} % Example image
-Three main concepts: Song, Artist and Album. Both Song and Album were divided between their descriptive data and their physical incarnation. We decided to set Song as the only necessary information, emulating the approach taken by most popular music player softwares, this justifies most of our data constraints.
-\begin{itemize}
-  \item A Song is related to:
-    \begin{description}
-      \item[Artist: ] A song can exist without known artists, but can also have several artists to describe collaborations.
-      \item[Medium: ] Though a song is not necessarily part of an album, it has to be recorded on some medium. There is therefore a participation constraint of Song in Medium. Their relation is characterized by the song's position on the medium.
-    \end{description}
-
-  \item An Artist is defined by a:
-    \begin{description}
-      \item[Genre: ] A genre can regroup multiple artists, but makes no sense as an empty  container, thus triggering a participation constraint, whereas an artist can be difficult to define as catering to a specific genre, or crossing boundaries between genres nullifying the need for a constraint.
-      \item[Area: ] An artist's location can be pinpointed to a specific creation grounds, hence the key constraint. But several artists can be compelled to share their musical feelings in the same studio, and a place which doesn't house such a creative conundrum isn't worth keeping track of.
-    \end{description} 
-
-  \item An Album is the logical aggregation of songs, labeled by a title, and can be recorded on multiple ---at least one, participation constraint--- media. Conversely, a medium identifies a singular recording of an album, enforced by a key constraint.
-\end{itemize}
 \end{center}
 }
-\\
+\section*{SQL DDL code for table creations}
 \lstinputlisting[language=SQL]{../scripts/entities.sql}{SQL script for entities table creation}
 \\
 \lstinputlisting[language=SQL]{../scripts/relations.sql}{SQL script for relations table creation}
 
+\section*{Design choices \& data constraints}
+\problemAnswer{
+There are three main concepts in our music database : \textbf{Song}, \textbf{Artist} and \textbf{Album}. Both \textbf{Song} and \textbf{Album} were divided between 
+their descriptive data and their physical incarnation. 
+We decided to enforce \textbf{Song} as the only necessary information to describe music, emulating the approach taken by most popular music player softwares since data can be incomplete.
+We put a NOT NULL constraint on most of the name attributes of the entities, with the exception of \textbf{Song} for the reason just stated. Since they are not required fields to describe 
+music, they should have a valid name when they are in fact used.
+
+\begin{itemize}
+  \item A \textbf{Song} is related to:
+    \begin{description}
+      \item[Artist: ] A song can exist without known artists, but can also have several artists to describe collaborations.
+      \item[Medium: ] Though a song is not necessarily part of an album, it has to be recorded on some medium. 
+      There is therefore a participation constraint of \textbf{Song} in \textbf{Medium}. Their relation is characterized by the track position on the medium.
+    \end{description}
+
+  \item An \textbf{Artist} is defined by a:
+    \begin{description}
+      \item[Genre: ] A genre can regroup multiple artists, but makes no sense as an empty  container, thus triggering a participation constraint, 
+      whereas an artist can be difficult to define as catering to a specific genre, or crossing boundaries between genres nullifying the need for a constraint. We kept the count attribute, 
+      choosing small update costs over on-demand higher computation costs. 
+      \item[Area: ] An artist's location can be pinpointed to a specific creation grounds, hence can be expressed by a foreign key constraint. But several artists can be compelled 
+      to share their musical feelings in the same studio, and a place which doesn't house such a creative conundrum isn't worth keeping track of in a music database.
+    \end{description} 
+
+  \item An \textbf{Album} is the logical aggregation of songs, labeled by a title, and can be recorded on multiple ---at least one, participation constraint--- media. 
+  Conversely, a medium identifies a singular recording of an album, enforced by a foreign key constraint.
+\end{itemize}
+
+Some constraints, the integrity of the count attribute in \textbf{Genre} and the several "at least one" constraints, are not guaranteed by the table creation. They will
+later be enforced later on by the import and delete data commands.
+
+}
 %----------------------------------------------------------------------------------------
 \end{document}
 
