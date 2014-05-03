@@ -15,17 +15,24 @@ class TableModel(QAbstractTableModel):
     def data(self,index,role=Qt.DisplayRole):
         return self.table[index.row()][index.column()]
 
+
 class MySql(QTableView):
 
-    def __init__(self,host='icoracle.epfl.ch',port=1521,usr='db2014_g24',pw='db2014_g24',parent=None):
-        super(QTableView,self).__init__(parent)
-        self.engine = create_engine("oracle://db2014_g24:db2014_g24@icoracle.epfl.ch/srso4")
-        self.connection = self.engine.connect()
-        self.meta = MetaData(bind = self.engine, reflect=True)
-        releases = self.meta.tables['releases']
-        results = self.connection.execute(select([releases]))
-        self.table = TableModel(results.fetchmany(50))
-        self.setModel(self.table)
-    
-    def __del__(self):
-        self.connection.close()
+	def __init__(self,host='icoracle.epfl.ch',port=1521,usr='db2014_g24',pw='db2014_g24',parent=None):
+		super(QTableView,self).__init__(parent)
+		self.engine = create_engine("oracle://db2014_g24:db2014_g24@icoracle.epfl.ch/srso4")
+		self.connection = self.engine.connect()
+		self.meta = MetaData(bind = self.engine, reflect=True)
+		releases = self.meta.tables['releases']
+		self.results = self.connection.execute(select([releases]))
+		self.table = TableModel(self.results.fetchmany(50))
+		self.setModel(self.table)
+		self.horizontalHeader().setStretchLastSection(True)
+        
+	def __del__(self):
+		self.connection.close()
+
+	def nextb(self):	
+		self.table = TableModel(self.results.fetchmany(50))
+		self.setModel(self.table)
+
