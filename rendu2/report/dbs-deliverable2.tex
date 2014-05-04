@@ -245,6 +245,12 @@ We removed all of our 'at least one' constraints to facilitate the import of new
 one can easily add any information into the database and not just track-related information like we initially had in mind. That is, in our first model, everything 
 had to be related to a track to be relevant but now every entities are independent. 
 
+\section*{About data import}
+We have not yet be able to import all data into the database. We tried using SQL loader to gain time but we ended
+up messing up our indexes and we pretty much had to empty all of our tables. 
+This part of the assignment will be completed for the final deliverable. For this one, we worked with a few hundreds entries
+for each table. 
+
 \section*{SQL Queries}
 \lstinputlisting[language=SQL]{../scripts/A.sql}{SQL script for query A} \\
 \lstinputlisting[language=SQL]{../scripts/B.sql}{SQL script for query B} \\
