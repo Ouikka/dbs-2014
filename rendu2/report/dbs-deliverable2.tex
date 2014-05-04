@@ -209,36 +209,41 @@
 \section*{Design choices \& data constraints}
 \problemAnswer{
 There are three main concepts in our music database : \textbf{Song}, \textbf{Artist} and \textbf{Album}. Both \textbf{Song} and \textbf{Album} were divided between 
-their descriptive data and their physical incarnation. 
-We decided to enforce \textbf{Song} as the only necessary information to describe music, emulating the approach taken by most popular music player softwares since data can be incomplete.
-We put a NOT NULL constraint on most of the name attributes of the entities, with the exception of \textbf{Song} for the reason just stated. Since they are not required fields to describe 
+their descriptive data (Recording, Release) and their physical incarnation (Track, Medium). 
+Since data is often incomplete, most of the entities 'can be related'.
+We put a NOT NULL constraint on most of the name attributes of the entities, with the exception of \textbf{Recording} for the reason just stated. Since they are not required fields to describe 
 music, they should have a valid name when they are in fact used.
 
 \begin{itemize}
-  \item A \textbf{Song} is related to:
+  \item A \textbf{Track} is related to:
     \begin{description}
-      \item[Artist: ] A song can exist without known artists, but can also have several artists to describe collaborations.
-      \item[Medium: ] Though a song is not necessarily part of an album, it has to be recorded on some medium. 
-      There is therefore a participation constraint of \textbf{Song} in \textbf{Medium}. Their relation is characterized by the track position on the medium.
+	\item[Recording: ] A track can be a physical incarnation of a known recording.
+      \item[Artist: ] A track can exist without known artists, but can also have several artists to describe collaborations.
+      \item[Medium: ] A track can be recorded on some medium. Their relation is characterized by the track position on the medium.
     \end{description}
 
   \item An \textbf{Artist} is defined by a:
     \begin{description}
-      \item[Genre: ] A genre can regroup multiple artists, but makes no sense as an empty  container, thus triggering a participation constraint, 
+      \item[Genre: ] A genre can regroup multiple artists,
       whereas an artist can be difficult to define as catering to a specific genre, or crossing boundaries between genres nullifying the need for a constraint. We kept the count attribute, 
       choosing small update costs over on-demand higher computation costs. 
       \item[Area: ] An artist's location can be pinpointed to a specific creation grounds, hence can be expressed by a foreign key constraint. But several artists can be compelled 
-      to share their musical feelings in the same studio, and a place which doesn't house such a creative conundrum isn't worth keeping track of in a music database.
+      to share their musical feelings in the same studio.
     \end{description} 
 
-  \item An \textbf{Album} is the logical aggregation of songs, labeled by a title, and can be recorded on multiple ---at least one, participation constraint--- media. 
+  \item A \textbf{Release} is the logical aggregation of songs, labeled by a title, and can be recorded on multiple mediums. 
   Conversely, a medium identifies a singular recording of an album, enforced by a foreign key constraint.
 \end{itemize}
 
-Some constraints, the integrity of the count attribute in \textbf{Genre} and the several "at least one" constraints, are not guaranteed by the table creation. They will
+The integrity of the count attribute in \textbf{Genre}, are not guaranteed by the table creation. It will
 later be enforced later on by the import and delete data commands.
 
 }
+
+\section*{Design changes from deliverable 1}
+We removed all of our 'at least one' constraints to facilitate the import of new data. For the same reason, we also changed our model to be closer to the given data, so that 
+one can easily add any information into the database and not just track-related information like we initially had in mind. That is, in our first model, everything 
+had to be related to a track to be relevant but now every entities are independent. 
 
 \section*{SQL Queries}
 \lstinputlisting[language=SQL]{../scripts/A.sql}{SQL script for query A} \\
