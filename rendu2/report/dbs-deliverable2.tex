@@ -208,9 +208,9 @@
 
 \section*{Design choices \& data constraints}
 \problemAnswer{
-There are three main concepts in our music database : \textbf{Song}, \textbf{Artist} and \textbf{Album}. Both \textbf{Song} and \textbf{Album} were divided between 
-their descriptive data (Recording, Release) and their physical incarnation (Track, Medium). 
-Since data is often incomplete, most of the entities 'can be related'.
+There are three main concepts in our music database : \textbf{Song}, \textbf{Artist} and \textbf{Album}. Both Song and Album were divided between 
+their descriptive data (\textbf{Recording, Release}) and their physical incarnation (\textbf{Track, Medium}). 
+Since data is often incomplete, most of the entities 'can be related' but do not have to.
 We put a NOT NULL constraint on most of the name attributes of the entities, with the exception of \textbf{Recording} for the reason just stated. Since they are not required fields to describe 
 music, they should have a valid name when they are in fact used.
 

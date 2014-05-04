@@ -1,3 +1,3 @@
-SELECT a.name
-FROM artists a, areas l
-WHERE a.areaID=l.areaID AND l.name='Switzerland' ;
+SELECT 	arti.name
+FROM 	artists arti, areas area
+WHERE 	arti.areaID=area.areaID AND area.name='Switzerland' ;
