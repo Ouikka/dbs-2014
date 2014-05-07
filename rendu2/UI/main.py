@@ -16,6 +16,18 @@ class MainWindow(QMainWindow):
         self.l = QVBoxLayout()
         self.setCentralWidget(self.w)
 
+	self.searchLayout = QHBoxLayout()
+	self.searchLayout.addWidget(QLineEdit(),3)
+	self.searchTopic = QComboBox()
+	self.searchTopic.addItem("Releases")
+	self.searchTopic.addItem("Recordings")
+	self.searchTopic.addItem("Artists")
+	self.searchTopic.addItem("Genres")
+	self.searchLayout.addWidget(self.searchTopic,1)
+	self.searchLayout.addWidget(QPushButton("Search"),1)
+
+	self.l.addLayout(self.searchLayout)
+
         self.h1 = QHBoxLayout()
         self.queriesLayout = QVBoxLayout()
         self.h1.addWidget(self.m,4)
@@ -34,8 +46,10 @@ class MainWindow(QMainWindow):
 
         self.h2 = QHBoxLayout() 
 
-        self.h2.addWidget(QPushButton("Prev"))
-        self.h2.addWidget(QPushButton("Next"))
+	self.h2.addWidget(QPushButton("Add record"),1)
+	self.h2.insertStretch(1,3)
+        self.h2.addWidget(QPushButton("Prev"),1)
+        self.h2.addWidget(QPushButton("Next",clicked=self.m.nextb),1)
         self.l.addLayout(self.h1)
         self.l.addLayout(self.h2)
 #        self.m.show()

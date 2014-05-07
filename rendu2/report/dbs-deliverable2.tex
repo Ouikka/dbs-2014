@@ -194,7 +194,6 @@
 %----------------------------------------------------------------------------------------
 
 % To have just one problem per page, simply put a \clearpage after each problem
-
 \section*{ER model for music database}
 \problemAnswer{
 \begin{center}
@@ -247,7 +246,7 @@ had to be related to a track to be relevant but now every entities are independe
 
 \section*{About data import}
 We have not yet be able to import all data into the database. We tried using SQL loader to gain time but we ended
-up messing up our indexes and we pretty much had to empty all of our tables. 
+up messing up our indexes and we pretty much had to empty all of our tables. In the end we were unable to extend the index of the two last tables, not allowing us to load the full data. 
 This part of the assignment will be completed for the final deliverable. For this one, we worked with a few hundreds entries
 for each table. 
 
@@ -262,5 +261,18 @@ for each table.
 
 \section*{Interface}
 %----------------------------------------------------------------------------------------
+\problemAnswer
+{
+\begin{center}
+\includegraphics[scale=0.3]{ui.png}
+\end{center}
+}
+We chose to use Python to design the software to harness the powerful SQLAlchemy API to interface with the database. Therefore we used PyQt5 to design the GUI itself providing clean and practical tools. SQLAlchemy offers a very useful model as it reflects accurately the actual database schema and makes it easier to map the data to the Model/View offered by Qt.
+Most of the window is taken over by the table representation presenting the data. It offers contextual research such as getting all records for an artist or for a release.
+\begin{center}
+\includegraphics[scale=0.5]{context.png}
+\end{center}
+At the top of the window is a search field. The entry is searched in the field selected in the ComboBox.
+On the right is a list of buttons to perform the queries requested in the deliverable.
+The last function is the import of data in the database which is handled quite straightforwardly by a dialog which presents the fields to fill in and generates dynamically the INSERT statement and the needed dynamic parameters, namely the id and the updated count per genre value.
 \end{document}
-
