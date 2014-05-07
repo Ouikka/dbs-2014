@@ -1,7 +1,7 @@
 -- List all cities which have more female than male artists.
 SELECT 	 areamalefemale.topname
 FROM (	
-	SELECT 		city."NAME" topname , city.areaid, 
+	SELECT 		city."NAME" topname , city.AreaId, 
 				count(CASE WHEN arti.gender = 'Female' THEN 1 END) AS females, 
 				count(CASE WHEN arti.gender = 'Male' THEN 1 END) AS males  
 	FROM 		Artists arti  

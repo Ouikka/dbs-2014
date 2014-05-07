@@ -7,4 +7,3 @@ HAVING  	COUNT (*) >= ALL (
 						FROM 	Tracks track
 						GROUP BY 	track.mediumid 
 				)
- 
