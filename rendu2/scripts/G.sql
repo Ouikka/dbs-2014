@@ -5,3 +5,7 @@ INNER JOIN  (	SELECT mediums.mediumid ,mediums.albumid
 				INNER JOIN Albums ON mediums.albumid = albums.albumid   ) medi 
 ON track.mediumid = medi.mediumid 
 GROUP BY medi.albumid ;
+
+
+Tracks track INNER JOIN Mediums medium
+on track.mediumid = medium.mediumid

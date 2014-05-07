@@ -1,12 +1,12 @@
 SELECT 	AreaId 
 FROM (	
-	SELECT 		city.areaid, 
-				count(CASE WHEN arti.gender = 'Female' THEN 1 END) AS females, 
-				count(CASE WHEN arti.gender = 'Male' THEN 1 END) AS males  
+	SELECT 		city.AreaID, 
+				count(CASE WHEN arti.Gender = 'Female' THEN 1 END) AS Females, 
+				count(CASE WHEN arti.Gender = 'Male' THEN 1 END) AS Males  
 	FROM 		Artists arti  
 	INNER JOIN	Areas city 
-	ON 			city.areaid = arti.areaId   
-	WHERE 		city.type = 'City' 
-	GROUP BY 		city.areaId 
+	ON 			city.AreaID = arti.AreaID   
+	WHERE 		city.Type = 'City' 
+	GROUP BY 		city.AreaID 
 ) areamalefemale 
 WHERE 	areamalefemale.Females > areamalefemale.Males

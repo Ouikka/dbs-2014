@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *#QAbstractTableModel
 
 from sqlalchemy import *
+from sqlalchemy.sql.expression import FromClause
 
 class TableModel(QAbstractTableModel):
     def __init__(self,table,parent=None):
@@ -24,7 +25,8 @@ class MySql(QTableView):
 		self.connection = self.engine.connect()
 		self.meta = MetaData(bind = self.engine, reflect=True)
 		releases = self.meta.tables['releases']
-		self.results = self.connection.execute(select([releases]))
+		self.request = FromClause.select([releases])
+		self.results = self.connection.execute(releases.select(over(func.row_number(),order_by='releaseid').between(0,50)))
 		self.table = TableModel(self.results.fetchmany(50))
 		self.setModel(self.table)
 		self.horizontalHeader().setStretchLastSection(True)
