@@ -5,3 +5,5 @@ Artist gender => Varchar au lieu de bit (import direct possible comme "Male/Fema
 pour l'import, remplacer les "\N" (dans AreaId de artiste par exemple) par NULL pour import direct ?
 
 Probléme de parsing présent dans certain fichiers (le wizard de SQL develloper semble avoir du mal à délimiter certain champs...)
+
+Manque champs "type" dans entity Artist (nécessaire pour Q2)
