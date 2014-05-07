@@ -29,16 +29,16 @@ CREATE TABLE Recordings (
 
   
 CREATE TABLE Releases ( 
-  albumID INTEGER, 
+  releaseID INTEGER, 
   name VARCHAR(2000) NOT NULL,
-  PRIMARY KEY (albumID) ) ;
+  PRIMARY KEY (releaseID) ) ;
   
 CREATE TABLE Mediums ( 
   mediumID INTEGER, 
-  albumID INTEGER, 
+  releaseID INTEGER, 
   format VARCHAR(255), 
   PRIMARY KEY (mediumID),
-  FOREIGN KEY (albumID) REFERENCES Albums ) ;
+  FOREIGN KEY (releaseID) REFERENCES Releases ) ;
   
   
 CREATE TABLE Tracks (

@@ -1,16 +1,16 @@
 SELECT 	name 
 FROM 	Artists arti 
 INNER JOIN (	
-		SELECT 		ArtistId, COUNT(DISTINCT AlbumId) num 
+		SELECT 		ArtistId, COUNT(DISTINCT releaseId) num 
 		FROM 		track_artist trackarti 
 		INNER JOIN (	
 				SELECT 	*  
 				FROM 	Tracks track 
 				INNER JOIN (	
-						SELECT 		mediums.mediumid, mediums.albumid 
+						SELECT 		mediums.mediumid, mediums.releaseid 
 						FROM 		Mediums 
-						INNER JOIN 	Albums 
-						ON 			mediums.albumid = albums.albumid			
+						INNER JOIN 	Releases 
+						ON 			mediums.releaseid = releases.releaseid			
 					 ) medi 
 				ON 	track.mediumid = medi.medium	
 			 ) track 
