@@ -1,10 +1,11 @@
+-- List the names of 10 groups with the most releases.
 SELECT * 
 FROM
 (
 SELECT 	arti.name 
 FROM 	Artists arti 
 INNER JOIN (	
-		SELECT 		ArtistId, COUNT(DISTINCT AlbumID) num 
+		SELECT 		ArtistId, COUNT(DISTINCT ReleaseID) num 
 		FROM 		Track_Artist trackarti 
 		INNER JOIN (	
 				SELECT 	*  

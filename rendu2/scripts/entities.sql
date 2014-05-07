@@ -1,43 +1,44 @@
 CREATE TABLE Areas ( 
   areaID INTEGER, 
-  name VARCHAR(255) NOT NULL, 
+  name VARCHAR(500) NOT NULL, 
   type VARCHAR(255),
   PRIMARY KEY (areaID) ) ;
 
 CREATE TABLE Genres ( 
   genreID INTEGER, 
-  name VARCHAR(255) NOT NULL,  
+  name VARCHAR(2000) NOT NULL,  
   count INTEGER DEFAULT 0, 
   PRIMARY KEY (genreID) ) ;
   
 CREATE TABLE Artists ( 
   artistID INTEGER, 
-  name VARCHAR(255) NOT NULL, 
+  name VARCHAR(2000) NOT NULL, 
   areaID INTEGER, 
-  gender CHAR(1), 
+  gender VARCHAR(255), 
+  type VARCHAR(255), 
   PRIMARY KEY (artistID),
   FOREIGN KEY (areaID) REFERENCES Areas ) ;
 
   
 CREATE TABLE Recordings ( 
   recordingID INTEGER, 
-  name VARCHAR(255) , 
+  name VARCHAR(4000) , 
   length INTEGER,  
   PRIMARY KEY (recordingID) ) ;
 
 
   
-CREATE TABLE Albums ( 
-  albumID INTEGER, 
-  name VARCHAR(255) NOT NULL,
-  PRIMARY KEY (albumID) ) ;
+CREATE TABLE Releases ( 
+  releaseID INTEGER, 
+  name VARCHAR(2000) NOT NULL,
+  PRIMARY KEY (releaseID) ) ;
   
 CREATE TABLE Mediums ( 
   mediumID INTEGER, 
-  albumID INTEGER, 
+  releaseID INTEGER, 
   format VARCHAR(255), 
   PRIMARY KEY (mediumID),
-  FOREIGN KEY (albumID) REFERENCES Albums ) ;
+  FOREIGN KEY (releaseID) REFERENCES Releases ) ;
   
   
 CREATE TABLE Tracks (

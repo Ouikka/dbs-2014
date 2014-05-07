@@ -1,3 +1,4 @@
+-- List the names of 10 groups with the most recorded tracks.
 SELECT	* 
 FROM (
 	SELECT 	Name 	
