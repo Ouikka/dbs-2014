@@ -1,3 +1,4 @@
+-- Print the name of a female artist associated with the most genres.
 SELECT	name 
 FROM 	Artists arti 
 INNER JOIN (	

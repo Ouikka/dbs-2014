@@ -1,3 +1,4 @@
+-- List all cities which have more female than male artists.
 SELECT 	 areamalefemale.topname
 FROM (	
 	SELECT 		city."NAME" topname , city.areaid, 

@@ -1,3 +1,4 @@
+-- List the names of 10 groups with the most releases.
 SELECT 	name 
 FROM 	Artists arti 
 INNER JOIN (	
