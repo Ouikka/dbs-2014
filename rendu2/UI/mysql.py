@@ -36,8 +36,7 @@ class MySql(QTableView):
         super(QTableView,self).__init__(parent)
         self.engine = create_engine("oracle://db2014_g24:db2014_g24@icoracle.epfl.ch/srso4")
         self.connection = self.engine.connect()
-        self.meta = MetaData()
-	self.meta.reflect(bind = self.engine)
+        self.meta = MetaData(bind = self.engine, reflect=True)
         releases = self.meta.tables['releases']
         self.results = self.connection.execute(select([releases]))
         t = self.results.fetchmany(50)
