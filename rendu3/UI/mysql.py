@@ -10,25 +10,38 @@ class TableModel(QAbstractTableModel):
     def __init__(self,table,keys,parent=None):
         super(QAbstractTableModel,self).__init__(parent)
         self.table=table
-	self.keys=keys
+        self.keys=keys
     def rowCount(self,parent = None):
         return len(self.table);
     def columnCount(self,parent = None):
         return len(self.table[0]);
     def data(self,index,role=Qt.DisplayRole):
-	if role == Qt.TextAlignmentRole:
-		return Qt.AlignLeft
-	elif role == Qt.DisplayRole:
+        if role == Qt.TextAlignmentRole:
+            return Qt.AlignLeft
+        elif role == Qt.DisplayRole:
         	return self.table[index.row()][index.column()]
     def headerData(self,section, orientation,role):
-	if orientation==Qt.Horizontal:	
-		if role == Qt.DisplayRole:
-			return QVariant(self.keys[section].capitalize())
-		elif role == Qt.SizeHintRole:
-			return QSize(8*max([len(str(i)) for i in self.table[section]]),30)
-		elif role == Qt.DecorationRole:
-			return QColor(0,0,0)
-	
+        if orientation==Qt.Horizontal:	
+            if role == Qt.DisplayRole:
+                return QVariant(self.keys[section].capitalize())
+            elif role == Qt.SizeHintRole:
+                return QSize(8*max([len(str(i)) for i in self.table[section]]),30)
+            elif role == Qt.DecorationRole:
+                return QColor(0,0,0)
+
+class Areas(Base):
+    __table__ = Base.metadata.tables['areas']	
+
+class ArtistGenre(Base):
+    __table__ = Base.metadata.tables['artist_genre']
+
+class Recordings(Base):
+    __table__ = Base.metadata.tables['recordings']
+
+class R(Base):
+    __table__ = Base.metadata.tables['areas']
+
+
 
 class MySql(QTableView):
 
@@ -37,7 +50,7 @@ class MySql(QTableView):
         self.engine = create_engine("oracle://db2014_g24:db2014_g24@icoracle.epfl.ch/srso4")
         self.connection = self.engine.connect()
         self.meta = MetaData()
-	self.meta.reflect(bind = self.engine)
+        self.meta.reflect(bind = self.engine)
         releases = self.meta.tables['releases']
         self.results = self.connection.execute(select([releases]))
         t = self.results.fetchmany(50)
@@ -46,7 +59,7 @@ class MySql(QTableView):
         self.setModel(self.table)
         self.horizontalHeader().setStretchLastSection(True)
         self.resizeColumnsToContents()
-	self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.customMenuRequested)
  
     @pyqtSlot(QPoint)
@@ -60,6 +73,47 @@ class MySql(QTableView):
         self.connection.close()
 
     def nextb(self):	
-	self.table = TableModel(self.results.fetchmany(50),self.results.keys())
-	self.setModel(self.table)
+        self.table = TableModel(self.results.fetchmany(50),self.results.keys())
+        self.setModel(self.table)
 
+    def executeQuery(self,query):
+        self.results = self.connection.execute(query)
+        t= self.results.fetchmany(50)
+        self.table = TableModel(t,self.results.keys())
+        self.setModel(self.table)
+
+    def queryA(self):
+        q = "SELECT arti.name FROM artists arti, areas area WHERE arti.areaID=area.areaID AND area.name='Switzerland'"
+        self.executeQuery(q)
+
+    def queryC(self):
+        with open("queries/C.sql") as file:
+            q = file.read().replace("\n","")
+        self.executeQuery(text(q))
+
+    def queryD(self):
+        with open("queries/D.sql") as file:
+            q = file.read().replace("\n","")
+        self.executeQuery(text(q))
+
+    def queryE(self):
+        with open("queries/E.sql") as file:
+            q = file.read().replace("\n","")
+        self.executeQuery(text(q))
+
+    def queryF(self):
+        with open("queries/F.sql") as file:
+            q = file.read().replace("\n","")
+        self.executeQuery(text(q))
+   
+    def queryG(self):
+        with open("queries/G.sql") as file:
+            q = file.read().replace("\n","")
+        self.executeQuery(text(q))
+    def queryH(self):
+        with open("queries/H.sql") as file:
+            q = file.read().replace("\n","")
+        self.executeQuery(text(q))
+
+    def searchQuery(self,word,topic):
+        q = 
