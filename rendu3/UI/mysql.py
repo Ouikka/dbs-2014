@@ -32,34 +32,54 @@ class TableModel(QAbstractTableModel):
 
 class MySql(QTableView):
 
-    def __init__(self,host='icoracle.epfl.ch',port=1521,usr='db2014_g24',pw='db2014_g24',parent=None):
-        super(QTableView,self).__init__(parent)
-        self.engine = create_engine("oracle://db2014_g24:db2014_g24@icoracle.epfl.ch/srso4")
-        self.connection = self.engine.connect()
-        self.meta = MetaData()
-	self.meta.reflect(bind = self.engine)
-        releases = self.meta.tables['releases']
-        self.results = self.connection.execute(select([releases]))
-        t = self.results.fetchmany(50)
-        #print(t)
-        self.table = TableModel(t,self.results.keys())
-        self.setModel(self.table)
-        self.horizontalHeader().setStretchLastSection(True)
-        self.resizeColumnsToContents()
-	self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.customMenuRequested)
+	def __init__(self,host='localhost',usr='db2014_g24',pw='',parent=None):
+		super(QTableView,self).__init__(parent)
+		self.engine = create_engine("sqlite:///../../../local-dbs")
+		self.connection = self.engine.connect()
+		self.meta = MetaData()
+		self.meta.reflect(bind = self.engine)
+		self.page_index=1
+		self.max_page=1
+		self.switchTable(0)
+		self.updateView()
+		self.horizontalHeader().setStretchLastSection(True)
+		self.resizeColumnsToContents()
+		self.setContextMenuPolicy(Qt.CustomContextMenu)
+		self.customContextMenuRequested.connect(self.customMenuRequested)
  
-    @pyqtSlot(QPoint)
-    def customMenuRequested(self, pos):
-        self.menu = QMenu()
-        self.menu.addAction(QAction("Artist",self))
-        self.menu.addAction(QAction("Release",self))
-        self.menu.popup(self.viewport().mapToGlobal(pos))
+	@pyqtSlot(QPoint)
+	def customMenuRequested(self, pos):
+		self.menu = QMenu()
+		self.menu.addAction(QAction("Artist",self))
+		self.menu.addAction(QAction("Release",self))
+		self.menu.popup(self.viewport().mapToGlobal(pos))
    
-    def __del__(self):
-        self.connection.close()
-
-    def nextb(self):	
-	self.table = TableModel(self.results.fetchmany(50),self.results.keys())
-	self.setModel(self.table)
+	def __del__(self):
+		self.connection.close()
+	
+	def switchTable(self, table_key):
+		self.table_name = {
+			0 : 'Releases',
+			1 : 'Recordings',
+			2 : 'Artists',
+			3 : 'Genres'
+		} [table_key]
+		self.updateView()
+		
+		
+	def nextPage(self):
+		self.page_index = min(self.max_page, self.page_index+1)	
+		self.updateView()
+	
+	def prevPage(self):
+		self.page_index = max(0, self.page_index-1)
+		self.updateView()
+		
+	def updateView(self):
+		table = self.connection.execute(select([self.meta.tables[self.table_name]]))
+		p = self.page_index
+		results = self.connection.execute("SELECT * from (select *, rowid r from %s ) where r >= %s and r < %s" % (self.table_name, str(p*50), str((p+1)*50))).fetchall()
+		#results = self.connection.execute('SELECT * from Releases')
+		self.table = TableModel(results,table.keys())
+		self.setModel(self.table)
 
