@@ -25,7 +25,7 @@ Select ArtistId, "NAME", AreaId Gender ,"TYPE", GenreId
 				      from Artist_GENRE 
 				      GROUP BY GenreId 
 				      ORDER BY counter DESC  )
-				    WHERE 	ROWNUM <=4)
+				    WHERE 	ROWNUM <=10)
 			) genreids
 			ON genreids.genreid = Artist_Genre.genreid ) artigenre 
 		ON artigenre.artistId = Artists.ArtistId 
