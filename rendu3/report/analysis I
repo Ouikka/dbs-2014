@@ -1,0 +1,20 @@
+SELECT R.name
+FROM Artists A, Track_artist Ta,Tracks T, Recordings R
+WHERE A.name="Metallica" and A.artistID=Ta.artistID and T.trackID=Ta.trackID and T.recordingId=R.recordingId
+GROUP BY T.recordingID
+ORDER BY COUNT(*) DESC
+LIMIT 25
+
+0|0|0|SCAN TABLE Track_artist AS Ta
+0|1|2|SEARCH TABLE Artists AS A USING INTEGER PRIMARY KEY (rowid=?)
+0|2|1|SEARCH TABLE Tracks AS T USING INTEGER PRIMARY KEY (rowid=?)
+0|3|3|SEARCH TABLE Recordings AS R USING INTEGER PRIMARY KEY (rowid=?)
+0|0|0|USE TEMP B-TREE FOR GROUP BY
+0|0|0|USE TEMP B-TREE FOR ORDER BY
+
+sans index : 10.08s
+avec index : 0.054s
+CREATE INDEX artistname ON artists(name);
+CREATE INDEX artistid ON artists(artistid);
+CREATE INDEX trackid ON tracks(trackid);
+CREATE INDEX recordingid ON recordings(recordingid);
