@@ -11,7 +11,7 @@ from sqlalchemy.pool import StaticPool
 
 
 import dialogs
-import model
+import models
 import time
 
 
@@ -36,31 +36,41 @@ class MySqlView(QTableView):
 		self.querylight=""
 		self.results=self.connection.execute('')
 		
-		#~ self.switchTable(0)
-		#~ self.updateView()
-		
-		#~ self.horizontalHeader().setStretchLastSection(True)
 		self.resizeColumnsToContents()
 		self.setContextMenuPolicy(Qt.CustomContextMenu)
-		self.customContextMenuRequested.connect(self.customMenuRequested)
-
+		self.setSelectionBehavior(QAbstractItemView.SelectRows)
  
 	@pyqtSlot(QPoint)
-	def customMenuRequested(self, pos):
-		self.menu = QMenu()
-		self.menu.addAction(QAction("Artist",self))
-		self.menu.addAction(QAction("Release",self))
+	def viewMenuRequested(self, pos):
+		self.contextMenu(pos)
+		self.menu.addAction(QAction("Edit",self))
+		self.menu.addAction(QAction("Delete",self))
 		self.menu.popup(self.viewport().mapToGlobal(pos))
-   
-
+	
+	@pyqtSlot(QPoint)
+	def customMenuRequested(self, pos):
+		if self.contextMenu(pos) :
+			self.menu.popup(self.viewport().mapToGlobal(pos))
+		
 	def __del__(self):
 		self.connection.close()
 	
+	def contextMenu(self, pos):
+		self.menu = QMenu()
+		key = self.keys [ self.columnAt ( pos.x() ) ]
+		if ( key.lower() == 'artistid' ) :
+			self.menu.addAction ( QAction('Go to artist', self) )
+			self.menu.addAction ( QAction('Go to artist\'s releases', self) )
+			self.menu.addAction ( QAction('Go to artist\'s tracks', self) )
+		else :
+			return False
+		return True
+		
 	# update the view with the current table content
 	def updatePageView(self):
 		index = (self.pageIndex-1) * MySqlView.ENTRIES_BY_PAGE
 		table = self.results[ index : index + MySqlView.ENTRIES_BY_PAGE ]
-		self.page = model.PageModel ( table, self.keys )
+		self.page = models.PageModel ( table, self.keys )
 		self.setModel ( self.page )
 		self.resizeColumnsToContents()
 		self.window.setPageStatus(self.pageIndex, self.maxPage)
@@ -85,7 +95,10 @@ class MySqlView(QTableView):
 				self.results = results.fetchall()
 				self.maxPage = ceil( len(self.results) / MySqlView.ENTRIES_BY_PAGE )
 				self.pageIndex = 1
+				self.window.numberResult( len (self.results) )
 				self.updatePageView()
+			else :
+				self.window.numberResult(0)
 		finally :
 			self.window.updateRunTime ( time.time() - start )
 			self.singleconnection.close()
@@ -123,15 +136,32 @@ class MySqlView(QTableView):
 	
 
 
-	def addRecordModel(self):
+	def addRecordTableModel(self):
 		query = "PRAGMA TABLE_INFO(%s)" % (self.tableName)
-		results = self.connection.execute(query).fetchall()
-		keys = [ key[1] for key in results ]
-		table = [ [ "" ] * len(keys) ]
-		return dialogs.addRecordModel(table, keys)
+		tableinfo = self.connection.execute(query).fetchall()
+		table = [ [None] * len (tableinfo) ]
+		for i in range(0, len(tableinfo)) :
+			key = tableinfo[i]
+			print key
+			if key[5]==1:
+				pk=key[1]
+				query = "SELECT MAX(%s) FROM %s" % ( pk, self.tableName )
+				maxId = self.connection.execute(query).fetchall()
+				table[0][i] = maxId[0][0]+1
+				print table[0][i]
+			else :
+				table[0][i] = key[4]
+		return models.AddRecordTableModel(self.tableName, tableinfo, table)
 
 	def searchTableModel(self):
 		0
+		
+	def viewMode(self):
+		self.customContextMenuRequested.connect(self.viewMenuRequested)
+		
+	def customMode(self):
+		self.customContextMenuRequested.connect(self.customMenuRequested)
+		
 	def keyToTableName(self,table_key):
 		return {
 			0 : 'Releases',

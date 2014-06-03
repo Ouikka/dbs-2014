@@ -252,22 +252,57 @@ instead. We used SQLite to handle this database.
 
 \section*{Interface}
 %----------------------------------------------------------------------------------------
+We chose to use Python to design the software with the SQLAlchemy API to interface with the database. 
+Therefore we used PyQt5 to design the GUI itself providing clean and practical tools. 
+SQLAlchemy offers a very useful model as it reflects accurately the actual database schema and makes it easier to map the data to the Model/View offered by Qt.
+\\
 \problemAnswer
 {
 \begin{center}
-\includegraphics[scale=0.3]{ui.png}
+\includegraphics[width=1\columnwidth]{interface.png}
 \end{center}
 }
-We chose to use Python to design the software to harness the powerful SQLAlchemy API to interface with the database. Therefore we used PyQt5 to design the GUI itself providing clean and practical tools. 
-SQLAlchemy offers a very useful model as it reflects accurately the actual database schema and makes it easier to map the data to the Model/View offered by Qt.
-Most of the window is taken over by the table representation presenting the data. It offers contextual research such as getting all records for an artist or for a release.
-\begin{center}
-\includegraphics[scale=0.5]{context.png}
-\end{center}
-At the top of the window is a search field. The entry is searched in the field selected in the ComboBox.
-On the right is a list of buttons to perform the queries requested in the deliverable.
-The last function is the import of data in the database which is handled quite straightforwardly by a dialog which presents the fields to fill in and generates dynamically the INSERT statement and the needed dynamic parameters, namely the id and the updated count per genre value.
+\bigskip
 
+Our interface allows the user to write their own queries, while providing them with friendly ways to build simple queries to navigate through the database, to edit or delete records and 
+to add new ones. The above picture shows our interface, after loading and running query C.
+The permissions and access to the different elements of the functionnality is handled through modes. Though we did not have the
+time to do it, this could easily be associated with user permissions. We have four different modes, which are a cross product
+between table view (tables' columns as in database) or custom view, and read/write or write only.
+\begin{itemize}
+\item 1 : The upper tool bar offers most of the available functions to create and run queries. From left to right we have the mode selection, the table selection, 
+the buttons to run the current query, to search for keywords in the current results and to add a new record to the current table (only in table view) and lastly
+the list of the loadable existing queries. A pending query can be canceled by clicking 
+a second time on the run button. 
+\item 2 : The query is displayed in a text box. It can only be edited in custom mode. 
+\item 3 : The results of the last query are shown in a table. 
+\item 4 : The navigation tool bar allows user to switch between result pages.
+\item 5 : The status bar gives feedback about the queries' runs. On the left, the status (ready or query pending) is given. On the right, if the last request was successful, 
+how many results it found and its run time. 
+\end{itemize}
+Right click on the table provides a contextual menu where the user can choose to edit or delete the selected
+entries (in view mode) or to make some follow up queries depending on the selected field. So for instance if we select 
+Nirvana, Pearl Jam and Metallica in our table and right click, we can then show all releases featuring those artists.
+\bigskip
+
+\problemAnswer
+{
+
+\begin{center}
+\includegraphics[width=1\columnwidth]{followup.png}
+\end{center}
+}
+\bigskip
+
+The update, search and insert queries are handled by pop up dialogs, providing tables to be filled which are then turned into queries. For instance, we can add a new artist.
+
+\bigskip
+\problemAnswer
+{
+\begin{center}
+\includegraphics[width=1\columnwidth]{addrecord.png}
+\end{center}
+}
 \section*{SQL Queries}
 \lstinputlisting[language=SQL]{../scripts/A.sql}{SQL script for query A} \\
 \lstinputlisting[language=SQL]{../scripts/B.sql}{SQL script for query B} \\

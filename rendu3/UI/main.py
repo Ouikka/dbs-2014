@@ -49,6 +49,7 @@ class MainWindow(QMainWindow):
 		# run query
 		self.runAction = QAction ( self )
 		self.runAction.setShortcut ( 'Enter' )
+		self.statusLabel = QLabel ( self )
 		self.statusReady ()
 		self.toolbar.addAction ( self.runAction )
 		self.querythread = None
@@ -97,7 +98,12 @@ class MainWindow(QMainWindow):
 		# navigate through the results
 		self.navLayout = QHBoxLayout() 
 		self.navBar = QToolBar ( 'Navigation' )
-
+		
+		#~ self.selectAllAction = QAction ( QIcon.fromTheme("edit-select-all"), 'Select all entries', self )
+		#~ self.selectAllAction.setShortcut ( 'CTRL-A' )
+		#~ self.selectAllAction.triggered.connect ( self.selectAll )
+		#~ self.navBar.addAction ( self.selectAllAction )
+		
 		left_spacer = QWidget()
 		left_spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
@@ -128,11 +134,15 @@ class MainWindow(QMainWindow):
 		#####
 		
 		# status bar
-		self.statusReady()
+
+		self.statusBar().addWidget ( self.statusLabel )
+		self.sucessLabel = QLabel ( self )
+		self.statusBar().addPermanentWidget ( self.sucessLabel )
 		self.resultLabel = QLabel ( self )
 		self.statusBar().addPermanentWidget ( self.resultLabel )
 		self.runTimeLabel = QLabel ( self )
 		self.statusBar().addPermanentWidget ( self.runTimeLabel )
+		self.statusReady ()
 		
 		#####
 		
@@ -145,8 +155,10 @@ class MainWindow(QMainWindow):
 	def switchMode(self):
 		if (self.modeComboBox.currentIndex() == 0):
 			self.tableViewMode()
+			self.dbs.viewMode()
 		else :
 			self.customViewMode()
+			self.dbs.customMode()
 	
 	def tableViewMode(self):
 		self.queryTextBox.setDisabled ( True )
@@ -168,13 +180,16 @@ class MainWindow(QMainWindow):
 		#~ self.querythread.start()
 		
 	def successfulQuery(self):
-		self.resultLabel.setText ( 'The query was successful ! ' )
+		self.sucessLabel.setText ( ' Success ' )
 		self.statusReady ()
 		
+	def numberResult(self, n):
+		self.resultLabel.setText ( ' Results found : %s ' % n )
+			
 	def cancelQuery(self):
 		#~ self.querythread.terminate()
 		#~ self.querythread.join()
-		#~ self.resultLabel.setText ( 'The query was canceled ' )
+		#~ self.sucessLabel.setText ( ' Cancelled ' )
 		#~ self.statusReady()
 		0
 		
@@ -185,21 +200,24 @@ class MainWindow(QMainWindow):
 		self.runAction.setIcon ( QIcon.fromTheme("system-run") ) 
 		self.runAction.setIconText ( 'Run query' )
 		self.runAction.triggered.connect ( self.runQuery )
-		self.statusBar().showMessage('Ready')
+		#~ self.statusBar().showMessage('Ready')
+		self.statusLabel.setText ( 'Ready' )
 	
 	def statusBusy(self):
 		self.runAction.setIcon ( QIcon.fromTheme("process-stop") )
 		self.runAction.setIconText ( 'Cancel query' )
 		self.runAction.triggered.connect ( self.cancelQuery )
-		self.statusBar().showMessage('Querying...')
+		#~ self.statusBar().showMessage ( 'Querying...' )
+		self.statusLabel.setText ( 'Querying ...' )
 		
 			
 	def searchQuery(self):
-		0
+		model = self.dbs.searchTableModel ()
+		#~ searchTable, result = dialogs.SearchDialog.
 		
 	def addRecord(self):
-		searchTable, result = dialogs.AddRecordDialog.getNewRecord(self.dbs, self.dbs.keyToTableName(self.tableComboBox.currentIndex()))
-		print searchTable
+		model = self.dbs.addRecordTableModel ()
+		newRecord, result = dialogs.AddRecordDialog.getNewRecord ( model )
 	
 	def loadQuery(self):
 		self.dbs.switchQuery ( self.queryComboBox.currentIndex() )
@@ -211,7 +229,11 @@ class MainWindow(QMainWindow):
 	def updateQueryBox(self, query):
 		self.queryTextBox.setText ( query ) 
 		
-		
+	
+	def selectAll(self):
+		for i in range ( 0, self.dbs.page.columnCount() ) :
+			self.dbs.selectColumn ( i )
+			 
 	def prevPage(self):
 		self.dbs.prevPage()
 	
