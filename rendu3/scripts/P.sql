@@ -1,23 +1,24 @@
 -- List the most popular genre among the groups wich are associated with at least 3 genres
-Select Genres.genreId, Genres.name 
-from Genres 
-	Inner Join (
-		Select GenreId, count(*) genrecounter 
-		from Artist_Genre artigenre 
-		Inner Join (
-			Select ArtistId 
-			From (
-				Select arti.ArtistId, count(*) numbgenre 
-				from Artist_genre 
+
+SELECT Genres.genreId, Genres.name 
+FROM Genres 
+	INNER JOIN (
+		SELECT GenreId, COUNT(*) genreCOUNTer 
+		FROM Artist_Genre artigenre 
+		INNER JOIN (
+			SELECT ArtistId 
+			FROM (
+				SELECT arti.ArtistId, COUNT(*) numbgenre 
+				FROM Artist_genre 
 				INNER JOIN (
-					Select artistId 
-					from Artists 
-					where type = 'Group') arti 
-				on Artist_genre.artistId = arti.artistId  
-				GROUP BY arti.ArtistId) artistgenrecount  
-			where numbgenre > 2 ) artithree 
+					SELECT artistId 
+					FROM Artists 
+					WHERE type = 'Group') arti 
+				ON Artist_genre.artistId = arti.artistId  
+				GROUP BY arti.ArtistId) artistgenreCOUNT  
+			WHERE numbgenre > 2 ) artithree 
 		ON artithree.artistId = artigenre.artistId 
-		Group By GenreId 
-		Order by genrecounter Desc) genreordered 
-	On genreordered.genreid = Genres.genreId 
-WHERE 	ROWNUM <=1  ;
+		GROUP BY GenreId 
+		ORDER BY genreCOUNTer Desc) genreordered 
+	ON genreordered.genreid = Genres.genreId 
+LIMIT 1

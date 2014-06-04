@@ -16,7 +16,7 @@
 						from Artist_GENRE 
 						GROUP BY GenreId 
 						ORDER BY counter DESC  )
-					WHERE 	ROWNUM <=4)
+					LIMIT 10)
 			) genreids
 			ON genreids.genreid = Artist_Genre.genreid
 		      ) artigenre 
@@ -25,3 +25,14 @@
 	ON Track_Artist.artistid = artilist.artistid 
 	GROUP BY  artilist.ArtistId, artilist."NAME", artilist.AreaId, artilist.gender, artilist."TYPE" , genreid
 	ORDER BY genreid, counter DESC 
+
+select g.genreid, a.*, COUNT ( DISTINCT
+from artists a, artist_genre ag, artist_track ta
+where a.artistid = ag.artistid and a.gender='Female' and ta.artistid=ta.artistid and ag.genreid in (
+select genreid
+from artist_genre 
+group by genreid
+order by count(*)
+limit 10 )
+group by a.artistid
+order by numtrack DESC

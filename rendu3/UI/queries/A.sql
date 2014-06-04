@@ -1,3 +1,3 @@
 SELECT  arti.name 
-FROM  artists arti, areas area 
-WHERE arti.areaID=area.areaID AND area.name='Switzerland'
+FROM  Artists arti, Areas area 
+WHERE arti.areaID=area.areaID AND area.name LIKE 'Switzerland'

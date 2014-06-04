@@ -304,9 +304,9 @@ The update, search and insert queries are handled by pop up dialogs, providing t
 \end{center}
 }
 
-\section*{Queries & performance analysis}
+\section*{Queries \& performance analysis}
 
-\section*{SQL Queries}
+\subsection*{SQL Queries}
 \lstinputlisting[language=SQL]{../scripts/A.sql}{SQL script for query A} \\
 \lstinputlisting[language=SQL]{../scripts/B.sql}{SQL script for query B} \\
 \lstinputlisting[language=SQL]{../scripts/C.sql}{SQL script for query C} \\
@@ -327,7 +327,13 @@ The update, search and insert queries are handled by pop up dialogs, providing t
 \lstinputlisting[language=SQL]{../scripts/R.sql}{SQL script for query R} \\
 \lstinputlisting[language=SQL]{../scripts/S.sql}{SQL script for query S} \\
 
+\subsection*{Run Time}
+We display here the run times in seconds for each query, as given to us by sqlite.
+\bigskip
+\\
+\csvautotabular{runtime.csv}
 \subsection*{On the necessity of indexes}
 We chosed queries I, K and M for our analysis. 
-\csvautotabular{runtime.csv}
+\\
+
 \end{document}

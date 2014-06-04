@@ -1,0 +1,3 @@
+SELECT DISTINCT release.releaseid, release.name
+FROM releases release, artists artist, track_artist ta, tracks track, mediums medium
+WHERE (artist.artistid=54 OR artist.artistid=190 OR artist.artistid=93 ) AND ta.artistid=artist.artistid AND ta.trackid=track.trackid AND track.mediumid=medium.mediumid AND release.releaseid=medium.releaseid ;

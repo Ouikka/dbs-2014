@@ -1,17 +1,8 @@
 -- List the names of 10 groups with the most recorded tracks.
-SELECT	* 
-FROM (
-	SELECT 	Name 	
-	FROM 	Artists arti 
-	INNER JOIN (	
-			SELECT 	ArtistId
-			FROM (	
-					SELECT ArtistId  , count(*) numb 
-					FROM 	TRACK_ARTIST 
-					GROUP BY 	ArtistId
-					ORDER BY 	numb DESC )
-		 ) artiId 
-	ON 		arti.ArtistId = artiId.ArtistId 
-	WHERE 	arti.Type = "GROUP"
-)
-WHERE 	ROWNUM <=10  ;
+
+SELECT a.name
+FROM Artists a, Track_artist t
+WHERE a.type='Group' AND a.artistID=t.artistID
+GROUP BY a.artistID
+ORDER BY count(*) DESC
+LIMIT 10

@@ -14,7 +14,37 @@ LIMIT 25
 
 sans index : 10.08s
 avec index : 0.054s
+
 CREATE INDEX artistname ON artists(name);
+CREATE INDEX areaname ON areas(name);
+CREATE INDEX recordingname ON recordings(name);
+CREATE INDEX releasename ON releases(name);
+CREATE INDEX genrename ON genres(name);
+
+CREATE INDEX artisttype ON artists(type);
+CREATE INDEX artistgender ON artists(gender);
+CREATE INDEX artistname ON artists(name);
+create index artistarea ON artists(areaid);
+
 CREATE INDEX artistid ON artists(artistid);
 CREATE INDEX trackid ON tracks(trackid);
 CREATE INDEX recordingid ON recordings(recordingid);
+CREATE INDEX mediumid ON mediums(mediumid);
+
+CREATE INDEX trackmedium ON tracks(mediumid);
+CREATE INDEX trackrecording ON tracks(recordingd);
+CREATE INDEX mediumformat ON mediums(format);
+CREATE INDEX mediumrelease ON mediums(releaseid);
+CREATE INDEX recordinglength on recordings(length);
+
+CREATE INDEX trackartist ON track_artist(trackid, artistid);
+CREATE INDEX artistgenre ON artist_genre(artistid, genreid);
+
+select *
+from areas a, artists ar
+where a.areaid=ar.areaid
+
+select *
+from areas a
+inner join artists ar
+on a.areaid=ar.areaid
