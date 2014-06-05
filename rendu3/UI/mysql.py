@@ -91,7 +91,7 @@ class MySqlView(QTableView):
 				self.goTracksFromGenre = QAction('Go to tracks from this genre', self,triggered=self.goToTracksFromGenre) 
 				self.goTracksFromGenre.setData(self.indexAt(pos).data())
 				self.menu.addAction (self.goTracksFromGenre )
-				self.goReleasesFromGenre = QAction('Go to artists from this genre', self,triggered=self.goToReleasesFromGenre) 
+				self.goReleasesFromGenre = QAction('Go to releases from this genre', self,triggered=self.goToReleasesFromGenre) 
 				self.goReleasesFromGenre.setData(self.indexAt(pos).data())
 				self.menu.addAction (self.goReleasesFromGenre )
 			else:
