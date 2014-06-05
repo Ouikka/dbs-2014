@@ -40,10 +40,10 @@ class AddRecordTableModel(QAbstractTableModel):
 	keys = []
 	table = []
 	
-	def __init__ ( self, tablename, tableinfo, table, parent=None ):
+	def __init__ ( self, tablename, keys, table, parent=None ):
 		super(QAbstractTableModel,self).__init__(parent)
 		self.tablename = tablename
-		self.keys = [ k[1] for k in tableinfo ] 
+		self.keys = keys
 		self.table = table
 		
 	def rowCount(self,parent = None):

@@ -45,7 +45,10 @@ class MySqlView(QTableView):
 	@pyqtSlot(QPoint)
 	def viewMenuRequested(self, pos):
 		self.contextMenu(pos)
-		self.menu.addAction(QAction("Edit",self))
+		self.editAction = QAction("Edit", self,triggered=self.editRecord) 
+		self.editAction.setData(self.page.data(self.indexAt(pos),Qt.EditRole))
+		self.menu.addAction (self.editAction)
+		self.menu.popup(self.viewport().mapToGlobal(pos))
 		self.deleteAction = QAction("Delete", self,triggered=self.deleteRecord) 
 		self.deleteAction.setData(self.page.data(self.indexAt(pos),Qt.EditRole))
 		self.menu.addAction (self.deleteAction)
@@ -66,7 +69,6 @@ class MySqlView(QTableView):
 			self.goArtist = QAction('Go to artist', self,triggered=self.goToArtist) 
 			self.goArtist.setData(self.indexAt(pos).data())
 			self.menu.addAction (self.goArtist )
-			#self.menu.addAction ( QAction('Go to artist\'s releases', self) )
 			self.goArtistReleases = QAction('Go to artist\'s releases', self,triggered=self.goToArtistReleases) 
 			self.goArtistReleases.setData(self.indexAt(pos).data())
 			self.menu.addAction (self.goArtistReleases )
@@ -78,9 +80,20 @@ class MySqlView(QTableView):
 		return True
 
 	def deleteRecord(self):
-		print(self.deleteAction.data())
 		self.query = "DELETE FROM " + self.tableName + " WHERE " + " AND ".join([a+"=\""+str(b)+"\"" for a,b in self.deleteAction.data().items() if b])
 		self.window.updateQueryBox ( self.query )
+
+	def editRecord(self):
+		values = self.deleteAction.data()
+		query = "PRAGMA TABLE_INFO(%s)" % (self.tableName)
+		tableinfo = self.connection.execute(query).fetchall()
+		model = models.AddRecordTableModel(self.tableName, [ k[1] for k in tableinfo ]  , [[values[k[1]] for k in tableinfo]])
+		newRecord, result = dialogs.AddRecordDialog.getNewRecord ( model )
+		if(result):
+			keyid = tableinfo[0][1]
+			thisid = newRecord.pop(keyid)
+			self.query="UPDATE " + self.tableName + " SET " + ",".join([a+"=\""+str(b)+"\"" for a,b in newRecord.items() if b]) + ' WHERE %s=%s'%(keyid,thisid)
+			self.window.updateQueryBox(self.query)
 
 	def goToArtist(self):
 		self.tableName = 'Artists'
@@ -196,7 +209,7 @@ class MySqlView(QTableView):
 				print(table[0][i])
 			else :
 				table[0][i] = key[4]
-		return models.AddRecordTableModel(self.tableName, tableinfo, table)
+		return models.AddRecordTableModel(self.tableName, [ k[1] for k in tableinfo ] , table)
 
 	def searchTableModel(self):
 		query = "PRAGMA TABLE_INFO(%s)" % (self.tableName)
