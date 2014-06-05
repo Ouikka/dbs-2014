@@ -21,6 +21,8 @@ class PageModel(QAbstractTableModel):
 			return Qt.AlignLeft
 		elif role == Qt.DisplayRole:
 			return self.table[index.row()][index.column()]
+		elif role == Qt.EditRole:
+			return dict(zip(self.keys,self.table[index.row()]))
 			
 	def headerData(self,section, orientation,role):
 		if orientation==Qt.Horizontal:	
@@ -35,6 +37,8 @@ class PageModel(QAbstractTableModel):
 
 class AddRecordTableModel(QAbstractTableModel):
 	entities = [ 'Releases', 'Recordings', 'Artists', 'Mediums', 'Areas' ]
+	keys = []
+	table = []
 	
 	def __init__ ( self, tablename, tableinfo, table, parent=None ):
 		super(QAbstractTableModel,self).__init__(parent)
@@ -62,7 +66,7 @@ class AddRecordTableModel(QAbstractTableModel):
 		if (index.column()!=0):
 			return  Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsEditable 
 		else :
-			return None
+			return Qt.NoItemFlags
 	
 	def headerData(self,section, orientation,role):
 		if orientation==Qt.Horizontal:	
@@ -76,22 +80,14 @@ class AddRecordTableModel(QAbstractTableModel):
 								
 class SearchTableModel(QAbstractTableModel):
 	entities = [ 'Releases', 'Recordings', 'Artists', 'Mediums', 'Areas' ]
+	keys = []
+	table = []
 	
-	def __init__(self,mysql,tablename,parent=None):
+	def __init__(self,mysql,tablename,tableinfo,parent=None):
 		super(QAbstractTableModel,self).__init__(parent)
 		self.tablename = tablename
-		self.meta = Table( tablename, mysql.meta)
-		self.keys = self.meta.columns.keys()
-		for c in self.meta.columns:
-			if c.primary_key:
-				self.primary_key = c.name
-				break
-		print self.primary_key
-		self.table = [ [ "" ] * len(self.keys) ]
-		if (tablename in RWTableModel.entities):
-			query = "SELECT MAX(%s) FROM %s" % ( self.primary_key, tablename )
-			maxId = mysql.connection.execute(query).fetchall()
-			self.table[0][0] = maxId[0][0]+1
+		self.keys = [ k[1] for k in tableinfo ] 
+		self.table =  [[  None  ] * len(self.keys)]
 		
 	def rowCount(self,parent = None):
 		return len(self.table);
@@ -110,10 +106,8 @@ class SearchTableModel(QAbstractTableModel):
 		return True
 		
 	def flags(self, index):
-		if (index.column()!=0):
-			return  Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsEditable 
-		else :
-			return None
+		return  Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsEditable 
+
 	
 	def headerData(self,section, orientation,role):
 		if orientation==Qt.Horizontal:	

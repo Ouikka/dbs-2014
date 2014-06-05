@@ -213,11 +213,16 @@ class MainWindow(QMainWindow):
 			
 	def searchQuery(self):
 		model = self.dbs.searchTableModel ()
-		#~ searchTable, result = dialogs.SearchDialog.
+		searchRecord, result = dialogs.SearchRecordDialog.getSearchRecord ( model )
+
+		if(result):
+			self.dbs.searchRecord(searchRecord)
 		
 	def addRecord(self):
 		model = self.dbs.addRecordTableModel ()
 		newRecord, result = dialogs.AddRecordDialog.getNewRecord ( model )
+		if(result):
+			self.dbs.addRecord(newRecord)
 	
 	def loadQuery(self):
 		self.dbs.switchQuery ( self.queryComboBox.currentIndex() )

@@ -14,6 +14,8 @@ import dialogs
 import models
 import time
 
+LOCALDB = "sqlite:///D:\\Prog\\Sqlite\\local-dbs"
+
 
 class MySqlView(QTableView):
 	Entities  = [ 'Releases', 'Recordings', 'Artists', 'Genres', 'Areas' ]
@@ -23,7 +25,7 @@ class MySqlView(QTableView):
 	def __init__(self,window,parent=None):
 		super(QTableView,self).__init__(parent)
 		self.window = window
-		self.engine = create_engine("sqlite:////home/tachikoma/Documents/EPFL/DBS/project/local-dbs")
+		self.engine = create_engine(LOCALDB)
 		self.connection = self.engine.connect()
 		self.singleconnection = self.connection
 		self.meta = MetaData()
@@ -44,7 +46,9 @@ class MySqlView(QTableView):
 	def viewMenuRequested(self, pos):
 		self.contextMenu(pos)
 		self.menu.addAction(QAction("Edit",self))
-		self.menu.addAction(QAction("Delete",self))
+		self.deleteAction = QAction("Delete", self,triggered=self.deleteRecord) 
+		self.deleteAction.setData(self.page.data(self.indexAt(pos),Qt.EditRole))
+		self.menu.addAction (self.deleteAction)
 		self.menu.popup(self.viewport().mapToGlobal(pos))
 	
 	@pyqtSlot(QPoint)
@@ -59,12 +63,47 @@ class MySqlView(QTableView):
 		self.menu = QMenu()
 		key = self.keys [ self.columnAt ( pos.x() ) ]
 		if ( key.lower() == 'artistid' ) :
-			self.menu.addAction ( QAction('Go to artist', self) )
-			self.menu.addAction ( QAction('Go to artist\'s releases', self) )
-			self.menu.addAction ( QAction('Go to artist\'s tracks', self) )
+			self.goArtist = QAction('Go to artist', self,triggered=self.goToArtist) 
+			self.goArtist.setData(self.indexAt(pos).data())
+			self.menu.addAction (self.goArtist )
+			#self.menu.addAction ( QAction('Go to artist\'s releases', self) )
+			self.goArtistReleases = QAction('Go to artist\'s releases', self,triggered=self.goToArtistReleases) 
+			self.goArtistReleases.setData(self.indexAt(pos).data())
+			self.menu.addAction (self.goArtistReleases )
+			self.goArtistTracks = QAction('Go to artist\'s tracks', self,triggered=self.goToArtistTracks) 
+			self.goArtistTracks.setData(self.indexAt(pos).data())
+			self.menu.addAction (self.goArtistTracks )
 		else :
 			return False
 		return True
+
+	def deleteRecord(self):
+		print(self.deleteAction.data())
+		self.query = "DELETE FROM " + self.tableName + " WHERE " + " AND ".join([a+"=\""+str(b)+"\"" for a,b in self.deleteAction.data().items() if b])
+		self.window.updateQueryBox ( self.query )
+
+	def goToArtist(self):
+		self.tableName = 'Artists'
+		self.query = "SELECT * FROM %s o WHERE artistid = %i" % (self.tableName,self.goArtist.data())
+		self.querylight = self.query
+		self.window.updateQueryBox ( self.query )
+		self.window.runQuery()
+
+	def goToArtistReleases(self):
+		self.tableName = 'Releases'
+		self.query = "SELECT DISTINCT R.releaseid,R.name FROM Tracks t, Track_artist A, Releases R, Mediums M WHERE A.artistid = %i AND t.trackid=A.trackid AND t.mediumid = M.mediumid AND R.releaseid = M.releaseid " % (self.goArtistReleases.data())
+		self.querylight = self.query
+		self.window.updateQueryBox ( self.query )
+		self.window.runQuery()
+
+	def goToArtistTracks(self):
+		self.tableName = 'Track_artist'
+		#self.query = "SELECT DISTINCT t.* FROM Tracks t, Track_artist A WHERE A.artistid = %i AND t.trackid= A.trackid" % (self.goArtistTracks.data())
+		self.query = "SELECT DISTINCT t.trackid, Rec.name, A.name, R.name  FROM Tracks t, Track_artist Ta, Artists A, Mediums M, Releases R, Recordings Rec WHERE A.artistid = %i AND A.artistid = Ta.artistid AND t.trackid=Ta.trackid AND t.mediumid=M.mediumid AND Rec.recordingid = t.recordingid AND R.releaseid = M.releaseid" % (self.goArtistTracks.data())
+		self.querylight = self.query
+		self.window.updateQueryBox ( self.query )
+		self.window.runQuery()
+
 		
 	# update the view with the current table content
 	def updatePageView(self):
@@ -85,7 +124,7 @@ class MySqlView(QTableView):
 	# execute current query	& update table content 
 	def runQuery(self, query):
 		try :
-			engine = create_engine ( "sqlite:////home/tachikoma/Documents/EPFL/DBS/project/local-dbs", poolclass=SingletonThreadPool )
+			engine = create_engine ( LOCALDB, poolclass=SingletonThreadPool )
 			self.singleconnection = engine.connect()
 			start = time.time()
 			results = self.singleconnection.execute(query)
@@ -107,8 +146,13 @@ class MySqlView(QTableView):
 	# update current query with search for keywords
 	def searchQuery_ (self, searchTable, token='AND') :
 		search = token.join ( { " %s LIKE '%%%s%%' " % ( key, word ) for key,word in searchTable.iteritems() if word } )
-		self.query = "SElECT * FROM ( %s ) WHERE %s " % (self.querylight)
+		self.query = "SELECT * FROM ( %s ) WHERE %s " % (self.querylight) 
 		self.window.updateQueryBox ( self.query )
+
+	def searchRecord(self,searchRec):
+		self.query = "SELECT * FROM (%s) WHERE " % (self.tableName) + " AND ".join([a+"=\""+b+"\"" for a,b in searchRec.items() if b])
+		self.window.updateQueryBox(self.query)
+		self.window.runQuery()
 		
 	
 	# reads query selected by user from file
@@ -121,8 +165,11 @@ class MySqlView(QTableView):
 		
 	# create query to add record to database
 	def addRecord ( self, newRecord ):
-		table = Table( self.tableName, self.meta )
-		self.query = table.insert().values( newRecord ) 
+		#table = Table( self.tableName, self.meta )
+		d = dict( (u,"\""+str(v)+"\"") for u,v in newRecord.items() if v)
+		print(d)
+		self.query = "INSERT INTO " + self.tableName + " (" + ",".join(d.keys()) + ") VALUES ("+",".join(d.values())+")"#str(table.insert().values( d ) )%d
+		self.window.updateQueryBox(self.query);
 		
 	# displays next page (if available)	
 	def nextPage(self):
@@ -140,21 +187,21 @@ class MySqlView(QTableView):
 		query = "PRAGMA TABLE_INFO(%s)" % (self.tableName)
 		tableinfo = self.connection.execute(query).fetchall()
 		table = [ [None] * len (tableinfo) ]
-		for i in range(0, len(tableinfo)) :
-			key = tableinfo[i]
-			print key
+		for i,key in enumerate(tableinfo) :
 			if key[5]==1:
 				pk=key[1]
 				query = "SELECT MAX(%s) FROM %s" % ( pk, self.tableName )
 				maxId = self.connection.execute(query).fetchall()
 				table[0][i] = maxId[0][0]+1
-				print table[0][i]
+				print(table[0][i])
 			else :
 				table[0][i] = key[4]
 		return models.AddRecordTableModel(self.tableName, tableinfo, table)
 
 	def searchTableModel(self):
-		0
+		query = "PRAGMA TABLE_INFO(%s)" % (self.tableName)
+		tableinfo = self.connection.execute(query).fetchall()
+		return models.SearchTableModel(self,self.tableName,tableinfo)
 		
 	def viewMode(self):
 		self.customContextMenuRequested.connect(self.viewMenuRequested)
