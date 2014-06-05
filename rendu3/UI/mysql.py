@@ -75,6 +75,28 @@ class MySqlView(QTableView):
 			self.goArtistTracks = QAction('Go to artist\'s tracks', self,triggered=self.goToArtistTracks) 
 			self.goArtistTracks.setData(self.indexAt(pos).data())
 			self.menu.addAction (self.goArtistTracks )
+		elif ( key.lower() == 'areaid' ) :
+			if self.indexAt(pos).data():
+				self.goArtistFromArea = QAction('Go to artists from this area', self,triggered=self.goToArtistFromArea) 
+				self.goArtistFromArea.setData(self.indexAt(pos).data())
+				self.menu.addAction (self.goArtistFromArea )
+			else:
+				return False
+
+		elif ( key.lower() == 'genreid' ) :
+			if self.indexAt(pos).data():
+				self.goArtistFromGenre = QAction('Go to artists from this genre', self,triggered=self.goToArtistFromGenre) 
+				self.goArtistFromGenre.setData(self.indexAt(pos).data())
+				self.menu.addAction (self.goArtistFromGenre )
+				self.goTracksFromGenre = QAction('Go to tracks from this genre', self,triggered=self.goToTracksFromGenre) 
+				self.goTracksFromGenre.setData(self.indexAt(pos).data())
+				self.menu.addAction (self.goTracksFromGenre )
+				self.goReleasesFromGenre = QAction('Go to artists from this genre', self,triggered=self.goToReleasesFromGenre) 
+				self.goReleasesFromGenre.setData(self.indexAt(pos).data())
+				self.menu.addAction (self.goReleasesFromGenre )
+			else:
+				return False
+			
 		else :
 			return False
 		return True
@@ -98,6 +120,34 @@ class MySqlView(QTableView):
 	def goToArtist(self):
 		self.tableName = 'Artists'
 		self.query = "SELECT * FROM %s o WHERE artistid = %i" % (self.tableName,self.goArtist.data())
+		self.querylight = self.query
+		self.window.updateQueryBox ( self.query )
+		self.window.runQuery()
+
+	def goToArtistFromArea(self):
+		self.tableName = 'Artists'
+		self.query = "SELECT * FROM %s o WHERE areaid = %i" % (self.tableName,self.goArtistFromArea.data())
+		self.querylight = self.query
+		self.window.updateQueryBox ( self.query )
+		self.window.runQuery()
+
+	def goToArtistFromGenre(self):
+		self.tableName = 'Artists'
+		self.query = "SELECT o.* FROM %s o,Artist_genre A WHERE A.genreid = %i AND A.artistid  = o.artistid" % (self.tableName,self.goArtistFromGenre.data())
+		self.querylight = self.query
+		self.window.updateQueryBox ( self.query )
+		self.window.runQuery()
+
+	def goToTracksFromGenre(self):
+		self.tableName = 'Track_artist'
+		self.query = "SELECT DISTINCT t.trackid, Rec.name, A.name, R.name  FROM Tracks t, Track_artist Ta, Artists A, Mediums M, Releases R, Recordings Rec, Artist_genre Ag WHERE Ag.genreid = %i AND Ag.artistid=A.artistid AND A.artistid = Ta.artistid AND t.trackid=Ta.trackid AND t.mediumid=M.mediumid AND Rec.recordingid = t.recordingid AND R.releaseid = M.releaseid" % (self.goTracksFromGenre.data())
+		self.querylight = self.query
+		self.window.updateQueryBox ( self.query )
+		self.window.runQuery()
+
+	def goToReleasesFromGenre(self):
+		self.tableName = 'Releases'
+		self.query = "SELECT DISTINCT R.releaseid,R.name FROM Tracks t, Track_artist A, Releases R, Mediums M,Artist_genre Ag WHERE Ag.genreid = %i AND Ag.artistid=A.artistid AND t.trackid=A.trackid AND t.mediumid = M.mediumid AND R.releaseid = M.releaseid " % (self.goReleasesFromGenre.data())
 		self.querylight = self.query
 		self.window.updateQueryBox ( self.query )
 		self.window.runQuery()
