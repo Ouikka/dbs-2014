@@ -305,8 +305,11 @@ The update, search and insert queries are handled by pop up dialogs, providing t
 }
 
 \section*{Queries \& performance analysis}
+As we had chosen to work using Oracle DB our queries were first written using this dialect. Due to issues related to the heavy concurrent usage of the server we later elected to transfer to a local database built using SQLite. However failure to communicate, and an improvable work distribution lead to gaps in the translation to SQLite. We therefore present in this report both versions of the queries.
 
 \subsection*{SQL Queries}
+
+\subsection*{SQLite}
 \lstinputlisting[language=SQL]{../scripts/A.sql}{SQL script for query A} \\
 \lstinputlisting[language=SQL]{../scripts/B.sql}{SQL script for query B} \\
 \lstinputlisting[language=SQL]{../scripts/C.sql}{SQL script for query C} \\
@@ -327,13 +330,35 @@ The update, search and insert queries are handled by pop up dialogs, providing t
 \lstinputlisting[language=SQL]{../scripts/R.sql}{SQL script for query R} \\
 \lstinputlisting[language=SQL]{../scripts/S.sql}{SQL script for query S} \\
 
+
+\subsubsection*{Oracle}
+\lstinputlisting[language=SQL]{../scripts/Oracle/A.sql}{SQL script for query A} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/B.sql}{SQL script for query B} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/C.sql}{SQL script for query C} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/D.sql}{SQL script for query D} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/E.sql}{SQL script for query E} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/F.sql}{SQL script for query F} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/G.sql}{SQL script for query G} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/H.sql}{SQL script for query H} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/I.sql}{SQL script for query I} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/J.sql}{SQL script for query J} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/K.sql}{SQL script for query K} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/L.sql}{SQL script for query L} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/M.sql}{SQL script for query M} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/N.sql}{SQL script for query N} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/O.sql}{SQL script for query O} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/P.sql}{SQL script for query P} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/Q.sql}{SQL script for query Q} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/R.sql}{SQL script for query R} \\
+\lstinputlisting[language=SQL]{../scripts/Oracle/S.sql}{SQL script for query S} \\
+
 \subsection*{Run Time}
-We display here the run times in seconds for each query, as given to us by sqlite.
+We display here the run times in seconds for each query, as given to us by the sqlite timer function. Real time corresponds to the time elapsed from start to end of the query, while user and system times correspond to CPU time spend respectively in user and kernel mode. The execution time of the query on the CPU would then equal the sum of both these terms.
 \bigskip
 \\
 \csvautotabular{runtime.csv}
 \subsection*{On the necessity of indexes}
-We chosed queries I, K and M for our analysis. 
+We chose queries I, K and M for our analysis. 
 \\
 
 \end{document}
